@@ -26,14 +26,17 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public static Player player2;
 	public static Enemy enemy;
 	public static Ball ball;
+	public static Menu menu;
+	public static String gameState = "menu";
 	
 	public Game() {
 		this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		this.addKeyListener(this);
 		player = new Player(100, HEIGHT-5);
 		player2 = new Player(100, 0);
-//		enemy = new Enemy(100, 0);
+		enemy = new Enemy(100, 0);
 		ball = new Ball(100, HEIGHT/2);
+		menu = new Menu();
 	}
 	
 
@@ -67,9 +70,18 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	}
 	
 	public void tick() {
-		player.tick();
-		player2.tick();
-		ball.tick();
+		if (gameState == "menu") {
+			menu.tick();
+		} else {
+			player.tick();
+			ball.tick();
+			if (gameState == "singleplayer") {
+				enemy.tick();
+			} else if (gameState == "multiplayer") {
+				player2.tick();
+			}
+			
+		}
 	}
 	
 	public void render() {
@@ -82,13 +94,22 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		Graphics g = layer.getGraphics();
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
+		
 		player.render(g);
-		player2.render(g);
-//		enemy.render(g);
 		ball.render(g);
+		if (gameState == "singleplayer") {
+			enemy.render(g);
+		} else if (gameState == "multiplayer") {
+			player2.render(g);
+		}
 		
 		g = bs.getDrawGraphics();
 		g.drawImage(layer, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
+		
+		if (gameState == "menu") {
+			menu.render(g);
+		}
+		
 		bs.show();
 	}
 	
@@ -119,17 +140,30 @@ public class Game extends Canvas implements Runnable, KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			player.right = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			player.left = true;
+		if (gameState == "menu") {
+			if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
+				menu.down = true;
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
+				menu.up = true;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+				menu.enter = true;
+			}
+		} else {
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				player.right = true;
+			} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				player.left = true;
+			}
+			
+			if (e.getKeyCode() == KeyEvent.VK_Q) {
+				player2.left = true;
+			} else if (e.getKeyCode() == KeyEvent.VK_W) {
+				player2.right = true;
+			}
 		}
 		
-		if (e.getKeyCode() == KeyEvent.VK_Q) {
-			player2.left = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_W) {
-			player2.right = true;
-		}
 	}
 
 

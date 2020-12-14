@@ -49,12 +49,15 @@ public class Ball {
 		Rectangle bounds = new Rectangle((int)(x+dx*speed), (int) (y+dy*speed), (int)width, (int)height);
 		Rectangle boundsPlayer = new Rectangle(Game.player.x, Game.player.y, Game.player.width, Game.player.height);
 		Rectangle boundsPlayer2 = new Rectangle(Game.player2.x, Game.player2.y, Game.player2.width, Game.player2.height);
-//		Rectangle boundsEnemy = new Rectangle((int)Game.enemy.x, (int)Game.enemy.y, (int)Game.enemy.width, (int)Game.enemy.height);
+		Rectangle boundsEnemy = new Rectangle((int)Game.enemy.x, (int)Game.enemy.y, (int)Game.enemy.width, (int)Game.enemy.height);
 		
 		if(bounds.intersects(boundsPlayer)) {
 			dx=this.getRandomHorizontal();
 			dy*=-1;
 		} else if (bounds.intersects(boundsPlayer2)) {
+			dx=this.getRandomHorizontal();
+			dy*=-1;
+		} else if (bounds.intersects(boundsEnemy)) {
 			dx=this.getRandomHorizontal();
 			dy*=-1;
 		}
