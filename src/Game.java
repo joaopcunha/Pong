@@ -27,6 +27,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public static Enemy enemy;
 	public static Ball ball;
 	public static Menu menu;
+	public static Score score = new Score();
 	public static String gameState = "menu";
 	
 	public Game() {
@@ -73,13 +74,16 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		if (gameState == "menu") {
 			menu.tick();
 		} else {
-			player.tick();
-			ball.tick();
 			if (gameState == "singleplayer") {
+				player.tick();
+				ball.tick();
 				enemy.tick();
 			} else if (gameState == "multiplayer") {
+				player.tick();
+				ball.tick();
 				player2.tick();
 			}
+			score.tick();
 			
 		}
 	}
@@ -95,11 +99,13 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
-		player.render(g);
-		ball.render(g);
 		if (gameState == "singleplayer") {
+			player.render(g);
+			ball.render(g);
 			enemy.render(g);
 		} else if (gameState == "multiplayer") {
+			player.render(g);
+			ball.render(g);
 			player2.render(g);
 		}
 		
@@ -108,6 +114,10 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		
 		if (gameState == "menu") {
 			menu.render(g);
+		} else if (gameState == "gameover") {
+			score.renderGameOver(g);
+		} else {
+			score.render(g);
 		}
 		
 		bs.show();
@@ -149,6 +159,11 @@ public class Game extends Canvas implements Runnable, KeyListener{
 			}
 			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 				menu.enter = true;
+			}
+		} else if (gameState == "gameover") {
+			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+				score.resetScore();
+				gameState = "menu";
 			}
 		} else {
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {

@@ -7,7 +7,7 @@ public class Ball {
 	
 	public double x, y, width, height;
 	public double dx, dy;
-	public double speed = 1;
+	public double speed = 1.5;
 	
 	public Ball(int x, int y) {
 		this.x = x;
@@ -39,9 +39,11 @@ public class Ball {
 		}
 		
 		if (y >= Game.HEIGHT) {
+			Game.score.addUpScore();
 			new Game();
 			return;
 		} else if (y < 0) {
+			Game.score.addDownScore();
 			new Game();
 			return;
 		}
