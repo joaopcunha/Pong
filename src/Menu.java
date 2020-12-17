@@ -34,19 +34,26 @@ public class Menu {
 		}
 		
 		if (enter) {
-			if(options[currentOption] == "New game vs IA") {
-				Game.gameState = "singleplayer";
-			}
 			enter = false;
 			
+			if(options[currentOption] == "New game vs IA") {
+				Game.gameState = "normal";
+				Game.gameMode = "singleplayer";
+			}
+			
+			
 			if (options[currentOption] == "Multiplayer") {
-				Game.gameState = "multiplayer";
+				Game.gameState = "normal";
+				Game.gameMode = "multiplayer";
+			}
+			
+			if (options[currentOption] == "Continue") {
+				Game.gameState = "normal";
 			}
 			
 			if(options[currentOption] == "Exit") {
 				System.exit(1);;
 			}
-			enter = false;
 		}
 	}
 	

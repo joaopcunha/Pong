@@ -13,7 +13,7 @@ public class Enemy {
 	}
 
 	public void tick() {
-		x += (Game.ball.x - x - 6) * 0.1;
+		x += (Game.ball.x - x - 8) * 0.06;
 		
 		
 		if (x+width > Game.WIDTH) {

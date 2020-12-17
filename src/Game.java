@@ -27,8 +27,10 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public static Enemy enemy;
 	public static Ball ball;
 	public static Menu menu;
+	public static Pause pause;
 	public static Score score = new Score();
 	public static String gameState = "menu";
+	public static String gameMode = "singleplayer";
 	
 	public Game() {
 		this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
@@ -38,6 +40,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		enemy = new Enemy(100, 0);
 		ball = new Ball(100, HEIGHT/2);
 		menu = new Menu();
+		pause = new Pause();
 	}
 	
 
@@ -73,12 +76,14 @@ public class Game extends Canvas implements Runnable, KeyListener{
 	public void tick() {
 		if (gameState == "menu") {
 			menu.tick();
-		} else {
-			if (gameState == "singleplayer") {
+		} else if (gameState == "pause") {
+			pause.tick();
+		} else if (gameState == "normal") {
+			if (gameMode == "singleplayer") {
 				player.tick();
 				ball.tick();
 				enemy.tick();
-			} else if (gameState == "multiplayer") {
+			} else if (gameMode == "multiplayer") {
 				player.tick();
 				ball.tick();
 				player2.tick();
@@ -99,21 +104,24 @@ public class Game extends Canvas implements Runnable, KeyListener{
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
-		if (gameState == "singleplayer") {
+		if (gameState == "normal") {
 			player.render(g);
 			ball.render(g);
-			enemy.render(g);
-		} else if (gameState == "multiplayer") {
-			player.render(g);
-			ball.render(g);
-			player2.render(g);
+			if (gameMode == "singleplayer") {
+				enemy.render(g);
+			} else if (gameMode == "multiplayer") {
+				player2.render(g);
+			}
 		}
+		
 		
 		g = bs.getDrawGraphics();
 		g.drawImage(layer, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
 		
 		if (gameState == "menu") {
 			menu.render(g);
+		} else if (gameState == "pause") {
+			pause.render(g);
 		} else if (gameState == "gameover") {
 			score.renderGameOver(g);
 		} else {
@@ -165,7 +173,17 @@ public class Game extends Canvas implements Runnable, KeyListener{
 				score.resetScore();
 				gameState = "menu";
 			}
-		} else {
+		} else if (gameState == "pause") {
+			if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
+				pause.down = true;
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
+				pause.up = true;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+				pause.enter = true;
+			}
+		} else if (gameState == "normal") {
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 				player.right = true;
 			} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
@@ -176,6 +194,10 @@ public class Game extends Canvas implements Runnable, KeyListener{
 				player2.left = true;
 			} else if (e.getKeyCode() == KeyEvent.VK_W) {
 				player2.right = true;
+			}
+			
+			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				gameState = "pause";
 			}
 		}
 		
